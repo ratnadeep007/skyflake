@@ -1,0 +1,81 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+name: Release For platforms
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # sets up go based on the version
+    - name: Download artifact linux
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow: build.yml
+        name: skyflake-ubuntu-latest
+        path: target/release/skyflake-ubuntu-latest
+    
+    - name: Download artifact macos
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow: build.yml
+        name: skyflake-macos-latest
+        path: target/release/skyflake-macos-latest
+        
+    - name: Download artifact linux
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow: build.yml
+        name: skyflake-windows-latest
+        path: target/release/skyflake-windows-latest
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: Alpha 1 release
+        draft: false
+        prerelease: false
+    
+    - name: list files
+      run: ls -lh && pwd
+        
+    - name: Upload linux artifacts
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: skyflake-ubuntu-latest
+        asset_name: skyflake-linux
+        asset_content_type: application/octet-stream
+    
+    - name: Upload macos artifacts
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: skyflake-macos-latest
+        asset_name: skyflake-macos
+        asset_content_type: application/octet-stream
+    
+    - name: Upload windows artifacts
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: skyflake-windows-latest
+        asset_name: skyflake.exe
+        asset_content_type: application/octet-stream
