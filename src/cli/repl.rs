@@ -16,6 +16,13 @@ pub async fn start_repl(ctx: &mut ExecutionContext, tables: &mut Vec<String>) {
             if res == "\\exit" {
                 break;
             } else if res == "\\tables" {
+                if tables.len() < 1 {
+                    println!("");
+                    println!("No tables registered.");
+                    println!("Use \\load command to register csv.");
+                    println!("\\load <csv_file_path>");
+                    println!("");
+                }
                 for table in tables.iter() {
                     println!("{}", table);
                 }
@@ -36,6 +43,8 @@ pub async fn start_repl(ctx: &mut ExecutionContext, tables: &mut Vec<String>) {
 
                     println!("{} database registered", tablename);
                 }
+            } else if res == "\\help" {
+                help_text(true);
             } else {
                 let df = ctx.sql(&res).await;
                 let _f = match df {
@@ -46,5 +55,22 @@ pub async fn start_repl(ctx: &mut ExecutionContext, tables: &mut Vec<String>) {
                 };
             }
         }
+    }
+}
+
+pub fn help_text(is_repl_on: bool) {
+    if !is_repl_on {
+        println!("");
+        println!("Snowflake - A small single executable software to use SQL in your CSVs");
+        println!("CLI arguments:");
+        println!("--dir <dir_path>: load CSVs from a directory");
+        println!("");
+    } else {
+        println!("");
+        println!("REPL Commands:");
+        println!("\\tables: List all tables");
+        println!("\\load: Load a single csv");
+        println!("\\exit: Quit repl");
+        println!("");
     }
 }
