@@ -17,13 +17,17 @@ pub async fn bulk_register_csv(ctx: &mut ExecutionContext, dir: String, tables: 
         let tablename = tablename_vec[0];
         tables.push(String::from(tablename));
 
-        let _ = &ctx
-            .register_csv(tablename, file_or_path.as_str(), CsvReadOptions::new())
-            .await
-            .unwrap();
+        register_csv(ctx, tablename, &file_or_path.as_str()).await;
 
         println!("{} database registered", tablename);
 
         // if fs::metadata(Path::from(filename)).unwrap().is_file() {}
     }
+}
+
+pub async fn register_csv(ctx: &mut ExecutionContext, tablename: &str, uri: &str) {
+    let _ = &ctx
+        .register_csv(tablename, uri, CsvReadOptions::new())
+        .await
+        .unwrap();
 }

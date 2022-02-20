@@ -9,15 +9,20 @@ pub async fn start_repl(ctx: &mut ExecutionContext, tables: &mut Vec<String>) {
 
     loop {
         if let ReadResult::Input(res) = interface.read_line().unwrap() {
-            if res == "exit" {
+            if res == "\\exit" {
                 break;
             } else if res == "\\tables" {
                 for table in tables.iter() {
                     println!("{}", table);
                 }
             } else {
-                let df = ctx.sql(&res).await.unwrap();
-                df.show().await.unwrap();
+                let df = ctx.sql(&res).await;
+                let _f = match df {
+                    Ok(dframe) => dframe.show().await.unwrap(),
+                    Err(error) => {
+                        println!("Error occured while executing sql: {}", error.to_string())
+                    }
+                };
             }
         }
     }

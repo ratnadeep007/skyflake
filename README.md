@@ -6,14 +6,16 @@ A snowflake like clone where you can use SQL statements to query from csv file d
 
 ### Roadmap
 
-[x] Basic SQL query execution
+- [x] Basic SQL query execution
 
-[x] Basic Repl
+- [x] Basic Repl
 
-[] Load csv from REPL
+- [x] Handle error gracefully
 
-[] Web Server with HTTP JSON response
+- [] Load csv from REPL
 
-[] Load csv from HTTP server
+- [] Web Server with HTTP JSON response
 
-[] Load from S3 compatible object storage
+- [] Load csv from HTTP server
+
+- [] Load from S3 compatible object storage
