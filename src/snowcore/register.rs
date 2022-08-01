@@ -11,13 +11,13 @@ pub async fn bulk_register_csv(ctx: &mut ExecutionContext, dir: String, tables: 
     for entry in entries {
         let os_str = entry.as_os_str().to_str().unwrap();
         let file_or_path = String::from_str(os_str).unwrap();
-        let filename_vec: Vec<&str> = file_or_path.split("/").collect();
+        let filename_vec: Vec<&str> = file_or_path.split('/').collect();
         let filename = filename_vec[1];
-        let tablename_vec: Vec<&str> = filename.split(".").collect();
+        let tablename_vec: Vec<&str> = filename.split('.').collect();
         let tablename = tablename_vec[0];
         tables.push(String::from(tablename));
 
-        register_csv(ctx, tablename, &file_or_path.as_str()).await;
+        register_csv(ctx, tablename, &file_or_path).await;
 
         println!("{} database registered", tablename);
 
